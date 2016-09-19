@@ -17,7 +17,10 @@
         <link rel="stylesheet" href="bootstrap.min.css"
     </head>
     <body>
-        <h3>Click the link below to view all authors.</h3><br><br>
-        <h4><a href="authorsTable.jsp">View all Authors</a></h4>
+        <div id="homeDiv">
+            <h2>Click the link below to view all authors.</h2><br><br>
+            <img src="http://www.clipartbest.com/cliparts/biy/LEz/biyLEz9iL.png" alt="stack of books" />
+            <h4><a href="authorsTable.jsp">View all Authors</a></h4>
+        </div>
     </body>
 </html>

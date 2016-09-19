@@ -12,6 +12,7 @@ import java.util.Date;
  * @author jcarrillo
  */
 public class Author {
+
     private int authorId;
     private String authorName;
     private Date dateAdded;
@@ -22,18 +23,18 @@ public class Author {
 
     public Author() {
     }
-    
+
     /**
-     * 
+     *
      * @param authorId
      * @param authorName
-     * @param dateAdded 
+     * @param dateAdded
      */
-    public Author(int authorId, String authorName, Date dateAdded)throws IllegalArgumentException, NullPointerException {
-        if (authorId < 1 || authorName == null || authorName.isEmpty()){
+    public Author(int authorId, String authorName, Date dateAdded) throws IllegalArgumentException, NullPointerException {
+        if (authorId < 1 || authorName == null || authorName.isEmpty()) {
             throw new IllegalArgumentException(INVALID_NAME_OR_ID);
         }
-        if (dateAdded == null){
+        if (dateAdded == null) {
             throw new NullPointerException(INVALID_DATE);
         }
         this.authorId = authorId;
@@ -46,22 +47,23 @@ public class Author {
     }
 
     public final void setAuthorId(int authorId) throws IllegalArgumentException {
-        if (authorId < 1){
+        if (authorId < 1) {
             throw new IllegalArgumentException(INVALID_ID);
-        } 
+        }
         this.authorId = authorId;
     }
 
     public final String getAuthorName() {
         return authorName;
     }
+
     /**
-     * 
+     *
      * @param authorName
-     * @throws IllegalArgumentException 
+     * @throws IllegalArgumentException
      */
     public final void setAuthorName(String authorName) throws IllegalArgumentException {
-        if (authorName == null || authorName.isEmpty()){
+        if (authorName == null || authorName.isEmpty()) {
             throw new IllegalArgumentException(INVALID_NAME);
         }
         this.authorName = authorName;
@@ -70,14 +72,14 @@ public class Author {
     public final Date getDateAdded() {
         return dateAdded;
     }
-    
+
     /**
-     * 
+     *
      * @param dateAdded
-     * @throws NullPointerException 
+     * @throws NullPointerException
      */
     public final void setDateAdded(Date dateAdded) throws NullPointerException {
-        if (dateAdded == null){
+        if (dateAdded == null) {
             throw new NullPointerException(INVALID_DATE);
         }
         this.dateAdded = dateAdded;
@@ -112,5 +114,5 @@ public class Author {
     public String toString() {
         return "Author{" + "authorId=" + authorId + ", authorName=" + authorName + ", dateAdded=" + dateAdded + '}';
     }
-    
+
 }

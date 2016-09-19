@@ -25,11 +25,11 @@
     <body>
         <h1>Authors Table</h1>
         <table id="table1" name="authorTable" class="table table-bordered">
-            <tr>
+            <thead>
                 <th class="text-center blueHeader">Author ID</th>
                 <th class="text-center blueHeader">Author Name</th>
                 <th class="text-center blueHeader">Date Added</th>
-            </tr>
+            </thead>
         <c:forEach var="author" items="${authors}">
             <tr>
                 <td>${author.authorId}</td>
