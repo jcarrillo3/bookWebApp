@@ -23,7 +23,7 @@ public class AuthorService {
         authors.add(new Author(57, "Bob Stewart", new Date()));
     }
 
-    public List getAuthors() {
+    public final List getAuthors() {
         return authors;
     }
     

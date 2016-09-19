@@ -15,37 +15,71 @@ public class Author {
     private int authorId;
     private String authorName;
     private Date dateAdded;
+    private final String INVALID_DATE = "Invalid Date value.";
+    private final String INVALID_NAME = "Invalid Author Name.";
+    private final String INVALID_ID = "Invalid Author ID.";
+    private final String INVALID_NAME_OR_ID = "Invalid Author Name and/or ID.";
 
     public Author() {
     }
-
-    public Author(int authorId, String authorName, Date dateAdded) {
+    
+    /**
+     * 
+     * @param authorId
+     * @param authorName
+     * @param dateAdded 
+     */
+    public Author(int authorId, String authorName, Date dateAdded)throws IllegalArgumentException, NullPointerException {
+        if (authorId < 1 || authorName == null || authorName.isEmpty()){
+            throw new IllegalArgumentException(INVALID_NAME_OR_ID);
+        }
+        if (dateAdded == null){
+            throw new NullPointerException(INVALID_DATE);
+        }
         this.authorId = authorId;
         this.authorName = authorName;
         this.dateAdded = dateAdded;
     }
 
-    public int getAuthorId() {
+    public final int getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(int authorId) {
+    public final void setAuthorId(int authorId) throws IllegalArgumentException {
+        if (authorId < 1){
+            throw new IllegalArgumentException(INVALID_ID);
+        } 
         this.authorId = authorId;
     }
 
-    public String getAuthorName() {
+    public final String getAuthorName() {
         return authorName;
     }
-
-    public void setAuthorName(String authorName) {
+    /**
+     * 
+     * @param authorName
+     * @throws IllegalArgumentException 
+     */
+    public final void setAuthorName(String authorName) throws IllegalArgumentException {
+        if (authorName == null || authorName.isEmpty()){
+            throw new IllegalArgumentException(INVALID_NAME);
+        }
         this.authorName = authorName;
     }
 
-    public Date getDateAdded() {
+    public final Date getDateAdded() {
         return dateAdded;
     }
-
-    public void setDateAdded(Date dateAdded) {
+    
+    /**
+     * 
+     * @param dateAdded
+     * @throws NullPointerException 
+     */
+    public final void setDateAdded(Date dateAdded) throws NullPointerException {
+        if (dateAdded == null){
+            throw new NullPointerException(INVALID_DATE);
+        }
         this.dateAdded = dateAdded;
     }
 
