@@ -24,7 +24,7 @@ import model.AuthorService;
  */
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
-
+    private final String INVALID_VALUE_MSG = "Invalid Value";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -39,9 +39,13 @@ public class AuthorController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         AuthorService service = new AuthorService();
-        List<Author> authors = service.getAuthors();
         
-        request.setAttribute("authors", authors);
+        try {
+            List<Author> authors = service.getAuthors();
+            request.setAttribute("authors", authors);
+        } catch (Exception e){
+            request.setAttribute("authors", INVALID_VALUE_MSG);
+        }
         
         RequestDispatcher view = request.getRequestDispatcher("/authorsTable.jsp");
         view.forward(request, response);
