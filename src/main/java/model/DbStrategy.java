@@ -19,7 +19,9 @@ public interface DbStrategy {
 
     List<Map<String, Object>> findAllRecords(String tableName, int maxRecords) throws SQLException;
     
-    int deleteRecordByKey(String tableName, String primaryKeyCol, int keyVal) throws SQLException;
+    int deleteRecordByKey(String tableName, String primaryKeyCol, Object keyVal) throws SQLException;
+    
+    int updateRecordByKey(String tableName, List<String> columns, List<Object> values, String primaryKeyCol, int keyVal) throws SQLException;
 
     void openConnection(String driverClass, String url, String userName, String password) throws ClassNotFoundException, SQLException;
     

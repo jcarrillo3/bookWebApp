@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 
 /**
  *
@@ -78,15 +79,26 @@ public class MySqlDbStrategy implements DbStrategy {
         return record;
     }
     
-    public int deleteRecordByKey(String tableName, String primaryKeyCol, int keyVal) throws SQLException{
-        String sql = "DELETE FROM AUTHOR WHERE " + primaryKeyCol + " = " + keyVal;
-        Statement stmt = conn.createStatement();
-        int deleteCount = stmt.executeUpdate(sql);
+    @Override
+    public int deleteRecordByKey(String tableName, String primaryKeyCol, Object keyVal) throws SQLException{
+        
+        PreparedStatement pstmt = this.buildDeleteStatement(tableName, primaryKeyCol, keyVal);
+        int deleteCount = pstmt.executeUpdate();
         
         return deleteCount;
     }
     
-    public int updateRecordByKey(String tableName, List<String> columns, List<Object> values, String primaryKeyCol, int keyVal) throws SQLException{
+    private PreparedStatement buildDeleteStatement(String tableName, String primaryKeyCol, Object keyVal) throws SQLException {
+        String sql = "DELETE FROM " + tableName + " WHERE " + primaryKeyCol + " = ?";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setObject(1, keyVal);
+        return pstmt;
+    }
+    
+    @Override
+    public int updateRecordByKey(String tableName, List<String> columns, 
+            List<Object> values, String primaryKeyCol, int keyVal) throws SQLException{
+        
         String sql = "UPDATE " + tableName + "\nSET ";
         for(int i=0; i < columns.size(); i++){
             if (i < columns.size()-1) {
@@ -105,6 +117,21 @@ public class MySqlDbStrategy implements DbStrategy {
         return updateCount;
     }
     
+    public final void insertRecord(String tableName, List<String> colNames, 
+            List<Object> colValues){
+        String sql = "INSERT INTO " + tableName + " ";
+        StringJoiner cols = new StringJoiner(",", "(", ")");
+        for(int i =0; i < colNames.size(); i++){
+            cols.add(colNames.get(i))
+        }
+        
+    }
+    
+    private void buildInsertMethod(String tableName, List<String> colNames, 
+            List<Object> colValues){
+        
+    }
+    
     public static void main(String[] args) throws Exception {
         MySqlDbStrategy db = new MySqlDbStrategy();
         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
@@ -115,17 +142,17 @@ public class MySqlDbStrategy implements DbStrategy {
 //        System.out.println(record);
 
 //        db.deleteRecordByKey("author", "author_id", 3);
-//        System.out.println(db.deleteRecordByKey("author", "author_id", 3) + " record(s) deleted");
+        System.out.println(db.deleteRecordByKey("author", "author_id", 4) + " record(s) deleted");
         
-        List<String> columns = new ArrayList<>();
-        columns.add("author_name");
-        columns.add("date_added");
-        List<Object> vals = new ArrayList<>();
-        vals.add("Ben Benson");
-        vals.add("2015-02-19");
+//        List<String> columns = new ArrayList<>();
+//        columns.add("author_name");
+//        columns.add("date_added");
+//        List<Object> vals = new ArrayList<>();
+//        vals.add("Ben Benson");
+//        vals.add("2015-02-19");
         
         //List<Map<String, Object>> records = db.findAllRecords("author", 500);
-        System.out.println(db.updateRecordByKey("author", columns, vals, "author_id", 4));
+        //System.out.println(db.updateRecordByKey("author", columns, vals, "author_id", 4));
         db.closeConnection();
     }
 }

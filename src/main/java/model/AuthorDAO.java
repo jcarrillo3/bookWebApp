@@ -61,12 +61,16 @@ public class AuthorDAO implements AuthorDAOInterface {
     }
     
     @Override
-    public int deleteAuthor() throws ClassNotFoundException, 
-            SQLException{
+    public int deleteAuthorById(String id) throws ClassNotFoundException, 
+            SQLException, NumberFormatException{
+        
+        Integer value = Integer.parseInt(id);
         
         db.openConnection(driverClass, url, userName, password);
+        int deleteCount = db.deleteRecordByKey("author", "author_id", value);
+        db.closeConnection();
         
-        return db.deleteRecordByKey("author", "author_id", 4);
+        return deleteCount;
     }
 
     public DbStrategy getDb() {
