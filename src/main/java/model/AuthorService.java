@@ -5,6 +5,7 @@
  */
 package model;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,17 +15,22 @@ import java.util.List;
  * @author jcarrillo
  */
 public class AuthorService {
-    private List<Author> authors;
+    AuthorDAOInterface dao;
     
-    public AuthorService(){
-        authors = new ArrayList<>();
-        authors.add(new Author(21, "Stan Jackson", new Date()));
-        authors.add(new Author(8, "Melvin Price", new Date()));
-        authors.add(new Author(57, "Bob Stewart", new Date()));
+    public AuthorService(AuthorDAOInterface dao){
+        this.dao = dao;
     }
 
-    public final List getAuthors() {
-        return authors;
+    public final List getAuthors() throws ClassNotFoundException, SQLException {
+        
+        return dao.getAuthorList();
+    }
+    
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        AuthorDAOInterface dao = new AuthorDAO(new MySqlDbStrategy(), 
+                "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+        AuthorService service = new AuthorService(dao);
+        System.out.println(service.getAuthors());
     }
     
     

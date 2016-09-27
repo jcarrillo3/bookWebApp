@@ -20,11 +20,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Authors Table</title>
         <link rel="stylesheet" href="main.css" />
-        <link rel="stylesheet" href="bootstrap.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     </head>
     <body>
+        <div class="container">
         <h1>Authors Table</h1>
-        <table id="table1" name="authorTable" class="table table-bordered">
+        <table id="table1" name="authorTable" class="table table-bordered table-hover">
             <thead>
                 <th class="text-center blueHeader">Author ID</th>
                 <th class="text-center blueHeader">Author Name</th>
@@ -38,6 +39,8 @@
             </tr>
         </c:forEach>
         </table>
+        </div>
         <h3><a href="index.jsp">Home</a></h3>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </body>
 </html>
