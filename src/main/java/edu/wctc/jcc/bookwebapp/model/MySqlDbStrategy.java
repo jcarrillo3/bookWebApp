@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package edu.wctc.jcc.bookwebapp.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -60,10 +60,13 @@ public class MySqlDbStrategy implements DbStrategy {
         }
         return records;
     }
-    public Map<String, Object> findRecordByKey(String tableName, String colName, int keyVal) throws SQLException{
-        String sql = "SELECT * FROM " + tableName + " WHERE " + colName + " = " + keyVal;
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+    
+    @Override
+    public Map<String, Object> findRecordByKey(String tableName, String colName, Object keyVal) throws SQLException{
+        String sql = "SELECT * FROM " + tableName + " WHERE " + colName + " = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setObject(1, keyVal);
+        ResultSet rs = ps.executeQuery();
         
         Map<String, Object> record = new LinkedHashMap<>();
         ResultSetMetaData rsmd = rs.getMetaData();
@@ -96,35 +99,49 @@ public class MySqlDbStrategy implements DbStrategy {
     }
     
     @Override
-    public int updateRecordByKey(String tableName, List<String> columns, 
-            List<Object> values, String primaryKeyCol, int keyVal) throws SQLException{
+    public int updateRecordByKey(String tableName, List<String> colNames, 
+            List<Object> colValues, String primaryKeyCol, Object keyVal) throws SQLException{
         
         String sql = "UPDATE " + tableName + "\nSET ";
-        for(int i=0; i < columns.size(); i++){
-            if (i < columns.size()-1) {
-                sql += columns.get(i) + "=?, ";
-            }
-            else {
-                sql += columns.get(i) + "=? WHERE " + primaryKeyCol + "=" + keyVal;
-            }
-        } 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        for (int i=0; i < values.size(); i++){
-            ps.setObject(i+1, values.get(i));
+        StringJoiner sj = new StringJoiner(", ");
+        for(int i =0; i < colNames.size(); i++){
+            sj.add(colNames.get(i) + "=?");
         }
-        int updateCount = ps.executeUpdate(sql);
+        sql += sj.toString() + "\nWHERE " + primaryKeyCol + "=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        for (int i=0; i < colValues.size(); i++){
+            ps.setObject(i +1, colValues.get(i));
+        }
+        ps.setObject(colValues.size() + 1, keyVal);
+        int updateCount = ps.executeUpdate();
         ps.close();
+        
         return updateCount;
     }
     
+    
+    @Override
     public final void insertRecord(String tableName, List<String> colNames, 
-            List<Object> colValues){
+            List<Object> colValues) throws SQLException{
+        
         String sql = "INSERT INTO " + tableName + " ";
         StringJoiner cols = new StringJoiner(",", "(", ")");
         for(int i =0; i < colNames.size(); i++){
-            cols.add(colNames.get(i))
+            cols.add(colNames.get(i));
+        }
+        sql += cols.toString() + "\n VALUES ";
+        StringJoiner vals = new StringJoiner(",", "(", ")");
+        for(int i=0; i < colValues.size(); i++){
+            vals.add("?");
+        }
+        sql += vals.toString();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        for (int i=0; i < colValues.size(); i++){
+            ps.setObject(i +1, colValues.get(i));
         }
         
+        ps.executeUpdate();
+        ps.close();
     }
     
     private void buildInsertMethod(String tableName, List<String> colNames, 
@@ -138,21 +155,23 @@ public class MySqlDbStrategy implements DbStrategy {
 //        List<Map<String, Object>> records = db.findAllRecords("author", 500);
 //        System.out.println(records);
 
-//        Map<String, Object> record = db.findRecordByKey("author", "author_id", 3);
+//        Map<String, Object> record = db.findRecordByKey("author", "author_id", 2);
 //        System.out.println(record);
 
 //        db.deleteRecordByKey("author", "author_id", 3);
-        System.out.println(db.deleteRecordByKey("author", "author_id", 4) + " record(s) deleted");
+//        System.out.println(db.deleteRecordByKey("author", "author_id", 4) + " record(s) deleted");
         
-//        List<String> columns = new ArrayList<>();
-//        columns.add("author_name");
-//        columns.add("date_added");
-//        List<Object> vals = new ArrayList<>();
-//        vals.add("Ben Benson");
-//        vals.add("2015-02-19");
+        List<String> columns = new ArrayList<>();
+        columns.add("author_name");
+        columns.add("date_added");
+        List<Object> vals = new ArrayList<>();
+        vals.add("James Benson");
+        vals.add("2014-02-19");
         
-        //List<Map<String, Object>> records = db.findAllRecords("author", 500);
-        //System.out.println(db.updateRecordByKey("author", columns, vals, "author_id", 4));
+        System.out.println(db.updateRecordByKey("author", columns, vals, "author_id", 6));
+        
+        List<Map<String, Object>> records = db.findAllRecords("author", 500);
+        System.out.println(records);
         db.closeConnection();
     }
 }

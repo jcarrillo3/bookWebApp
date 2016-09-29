@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller;
+package edu.wctc.jcc.bookwebapp.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,11 +15,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Author;
-import model.AuthorDAO;
-import model.AuthorDAOInterface;
-import model.AuthorService;
-import model.MySqlDbStrategy;
+import edu.wctc.jcc.bookwebapp.model.Author;
+import edu.wctc.jcc.bookwebapp.model.AuthorDAO;
+import edu.wctc.jcc.bookwebapp.model.AuthorDAOInterface;
+import edu.wctc.jcc.bookwebapp.model.AuthorService;
+import edu.wctc.jcc.bookwebapp.model.MySqlDbStrategy;
 
 /**
  *

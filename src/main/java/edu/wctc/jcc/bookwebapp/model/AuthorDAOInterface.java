@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package edu.wctc.jcc.bookwebapp.model;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,6 +16,12 @@ public interface AuthorDAOInterface {
 
     List<Author> getAuthorList() throws ClassNotFoundException, SQLException;
     
+    Author getAuthorById(String id) throws ClassNotFoundException, SQLException;
+    
     int deleteAuthorById(String id) throws ClassNotFoundException, 
             SQLException;
+    
+    void createAuthor(List<String> columns, List<Object> values) throws ClassNotFoundException, SQLException;
+    
+    int updateAuthor(List<String> colNames, List<Object> colValues, String primaryKeyCOl, String id) throws ClassNotFoundException, SQLException;
 }

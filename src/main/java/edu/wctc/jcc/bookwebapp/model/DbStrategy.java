@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package edu.wctc.jcc.bookwebapp.model;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -19,10 +19,15 @@ public interface DbStrategy {
 
     List<Map<String, Object>> findAllRecords(String tableName, int maxRecords) throws SQLException;
     
+    Map<String, Object> findRecordByKey(String tableName, String colName, Object keyVal) throws SQLException;
+    
     int deleteRecordByKey(String tableName, String primaryKeyCol, Object keyVal) throws SQLException;
     
-    int updateRecordByKey(String tableName, List<String> columns, List<Object> values, String primaryKeyCol, int keyVal) throws SQLException;
+    int updateRecordByKey(String tableName, List<String> columns, List<Object> values, String primaryKeyCol, Object keyVal) throws SQLException;
 
+    void insertRecord(String tableName, List<String> columns, List<Object> values) throws SQLException;
+
+    
     void openConnection(String driverClass, String url, String userName, String password) throws ClassNotFoundException, SQLException;
     
 }

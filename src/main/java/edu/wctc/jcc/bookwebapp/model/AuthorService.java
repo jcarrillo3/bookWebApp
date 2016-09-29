@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package edu.wctc.jcc.bookwebapp.model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ public class AuthorService {
         
         return dao.getAuthorList();
     }
+    
     
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         AuthorDAOInterface dao = new AuthorDAO(new MySqlDbStrategy(), 
