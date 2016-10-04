@@ -10,9 +10,11 @@ and open the template in the editor.
 body {
     text-align: center;
 }
+
 /*#table1 {
     width: 800px;
 }       */
+
 .blueHeader {
     background-color: #cae2e8;
 }

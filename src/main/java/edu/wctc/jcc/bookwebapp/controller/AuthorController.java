@@ -25,7 +25,7 @@ import edu.wctc.jcc.bookwebapp.model.MySqlDbStrategy;
  *
  * @author jcarrillo
  */
-@WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
+@WebServlet(name = "AuthorController", urlPatterns = {"/authors"})
 public class AuthorController extends HttpServlet {
     private final String INVALID_VALUE_MSG = "Invalid Value";
     /**
@@ -40,20 +40,28 @@ public class AuthorController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String action = request.getParameter("action");
         
         AuthorDAOInterface dao = new AuthorDAO(new MySqlDbStrategy(), 
                 "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
         AuthorService service = new AuthorService(dao);
         
-        try {
-            List<Author> authors = service.getAuthors();
-            request.setAttribute("authors", authors);
-        } catch (Exception e){
-            request.setAttribute("authors", INVALID_VALUE_MSG);
+        if (action == null) {
+            try {
+                List<Author> authors = service.getAuthors();
+                request.setAttribute("authorList", authors);
+            } catch (Exception e){
+                request.setAttribute("authors", INVALID_VALUE_MSG);
+            }
+
+            RequestDispatcher view = request.getRequestDispatcher("/authorsTable.jsp");
+            view.forward(request, response);
+            
+        } else if (action.equalsIgnoreCase("AddUpdateDelete")) {
+            request.setAttribute("test", "hello");
+            RequestDispatcher view = request.getRequestDispatcher("/addUpdateAuthor.jsp");
+            view.forward(request, response);
         }
-        
-        RequestDispatcher view = request.getRequestDispatcher("/authorsTable.jsp");
-        view.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

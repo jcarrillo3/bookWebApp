@@ -27,20 +27,32 @@ public class MySqlDbStrategy implements DbStrategy {
     private Connection conn;
     
     @Override
-    public void openConnection(String driverClass, String url, String userName, 
-            String password) throws ClassNotFoundException, SQLException{
+    public final void openConnection(String driverClass, String url, String userName, 
+            String password) throws ClassNotFoundException, SQLException, IllegalArgumentException {
+        
+        if (driverClass.isEmpty() || url.isEmpty() || userName.isEmpty() || password.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        if (driverClass == null || url == null || userName == null || password == null){
+            throw new NullPointerException();
+        }
         
         Class.forName(driverClass);
         conn = DriverManager.getConnection(url, userName, password);
     }
     
     @Override
-    public void closeConnection() throws SQLException{
+    public final void closeConnection() throws SQLException{
         conn.close();
     }
     
     @Override
-    public List<Map<String, Object>> findAllRecords(String tableName, int maxRecords) throws SQLException{
+    public final List<Map<String, Object>> findAllRecords(String tableName, int maxRecords) 
+            throws SQLException, IllegalArgumentException{
+        
+        if (tableName == null || tableName.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
         String sql = "SELECT * FROM " + tableName + " LIMIT " + maxRecords;
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
@@ -62,7 +74,16 @@ public class MySqlDbStrategy implements DbStrategy {
     }
     
     @Override
-    public Map<String, Object> findRecordByKey(String tableName, String colName, Object keyVal) throws SQLException{
+    public final Map<String, Object> findRecordByKey(String tableName, 
+            String colName, Object keyVal) throws SQLException, IllegalArgumentException{
+        
+        if(tableName == null || tableName.isEmpty() || colName == null 
+                || colName.isEmpty() || keyVal == null) {
+            throw new IllegalArgumentException();
+        }
+        if (tableName == null || colName == null || keyVal == null) {
+            throw new NullPointerException();
+        }
         String sql = "SELECT * FROM " + tableName + " WHERE " + colName + " = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setObject(1, keyVal);
@@ -83,9 +104,18 @@ public class MySqlDbStrategy implements DbStrategy {
     }
     
     @Override
-    public int deleteRecordByKey(String tableName, String primaryKeyCol, Object keyVal) throws SQLException{
+    public final int deleteRecordByKey(String tableName, String primaryKeyCol, 
+            Object keyVal) throws SQLException, IllegalArgumentException, NullPointerException{
         
-        PreparedStatement pstmt = this.buildDeleteStatement(tableName, primaryKeyCol, keyVal);
+        if (tableName.isEmpty()|| primaryKeyCol.isEmpty()){
+            throw new IllegalArgumentException();
+        }
+        if(tableName == null || primaryKeyCol == null || keyVal == null) {
+            throw new NullPointerException();
+        }
+        
+        PreparedStatement pstmt = this.buildDeleteStatement(tableName, 
+                primaryKeyCol, keyVal);
         int deleteCount = pstmt.executeUpdate();
         
         return deleteCount;
@@ -99,8 +129,26 @@ public class MySqlDbStrategy implements DbStrategy {
     }
     
     @Override
-    public int updateRecordByKey(String tableName, List<String> colNames, 
-            List<Object> colValues, String primaryKeyCol, Object keyVal) throws SQLException{
+    public final int updateRecordByKey(String tableName, List<String> colNames, 
+            List<Object> colValues, String primaryKeyCol, Object keyVal) 
+            throws SQLException, IllegalArgumentException, NullPointerException {
+        
+        if (tableName.isEmpty() || colNames.size() < 1 || colValues.size() < 1 || primaryKeyCol.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        if (tableName == null || colNames == null || colValues == null || keyVal == null) {
+            throw new NullPointerException();
+        }
+
+        PreparedStatement ps = this.buildUpdateStatement(tableName, colNames, colValues, primaryKeyCol, keyVal);
+        int updateCount = ps.executeUpdate();
+        ps.close();
+        
+        return updateCount;
+    }
+    
+    private PreparedStatement buildUpdateStatement(String tableName, List<String> colNames, 
+            List<Object> colValues, String primaryKeyCol, Object keyVal) throws SQLException {
         
         String sql = "UPDATE " + tableName + "\nSET ";
         StringJoiner sj = new StringJoiner(", ");
@@ -114,14 +162,29 @@ public class MySqlDbStrategy implements DbStrategy {
         }
         ps.setObject(colValues.size() + 1, keyVal);
         int updateCount = ps.executeUpdate();
-        ps.close();
         
-        return updateCount;
+        return ps;
     }
     
     
     @Override
     public final void insertRecord(String tableName, List<String> colNames, 
+            List<Object> colValues) throws SQLException, IllegalArgumentException, NullPointerException {
+        
+        if (tableName.isEmpty() || colNames.size() < 1 || colValues.size() < 1) {
+            throw new IllegalArgumentException();
+        }
+        if (tableName == null || colNames == null || colValues == null){
+            throw new NullPointerException();
+        }
+
+        PreparedStatement ps = this.buildInsertMethod(tableName, colNames, colValues);
+        
+        ps.executeUpdate();
+        ps.close();
+    }
+    
+    private PreparedStatement buildInsertMethod(String tableName, List<String> colNames, 
             List<Object> colValues) throws SQLException{
         
         String sql = "INSERT INTO " + tableName + " ";
@@ -139,14 +202,7 @@ public class MySqlDbStrategy implements DbStrategy {
         for (int i=0; i < colValues.size(); i++){
             ps.setObject(i +1, colValues.get(i));
         }
-        
-        ps.executeUpdate();
-        ps.close();
-    }
-    
-    private void buildInsertMethod(String tableName, List<String> colNames, 
-            List<Object> colValues){
-        
+        return ps;
     }
     
     public static void main(String[] args) throws Exception {
@@ -165,10 +221,10 @@ public class MySqlDbStrategy implements DbStrategy {
         columns.add("author_name");
         columns.add("date_added");
         List<Object> vals = new ArrayList<>();
-        vals.add("James Benson");
-        vals.add("2014-02-19");
+        vals.add("Jake Ford");
+        vals.add("2014-11-04");
         
-        System.out.println(db.updateRecordByKey("author", columns, vals, "author_id", 6));
+        System.out.println(db.updateRecordByKey("author", columns, vals, "author_id", "10"));
         
         List<Map<String, Object>> records = db.findAllRecords("author", 500);
         System.out.println(records);
