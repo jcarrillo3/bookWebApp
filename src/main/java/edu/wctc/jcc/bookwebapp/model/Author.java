@@ -21,34 +21,48 @@ public class Author {
     private final String INVALID_ID = "Invalid Author ID.";
     private final String INVALID_NAME_OR_ID = "Invalid Author Name and/or ID.";
 
+    /**
+     * Empty Constructor.
+     */
     public Author() {
     }
     
-    public Author(int authorId){
-        this.authorId = authorId;
-    }
     /**
-     *
+     * Initializes an Author with ID only.
+     * @param authorId
+     * @throws IllegalArgumentException if authorId is less than 1. 
+     */
+    public Author(int authorId) throws IllegalArgumentException{
+        setAuthorId(authorId);
+    }
+    
+    /**
+     * Initializes an Author with ID, Name, and Date Added.
      * @param authorId
      * @param authorName
      * @param dateAdded
+     * @throws IllegalArgumentException if parameters are invalid.
+     * @throws NullPointerException if any parameter is null.
      */
     public Author(int authorId, String authorName, Date dateAdded) throws IllegalArgumentException, NullPointerException {
-        if (authorId < 1 || authorName == null || authorName.isEmpty()) {
-            throw new IllegalArgumentException(INVALID_NAME_OR_ID);
-        }
-        if (dateAdded == null) {
-            throw new NullPointerException(INVALID_DATE);
-        }
-        this.authorId = authorId;
-        this.authorName = authorName;
-        this.dateAdded = dateAdded;
+        setAuthorId(authorId);
+        setAuthorName(authorName);
+        setDateAdded(dateAdded);
     }
 
+    /**
+     * Returns the ID of the Author.
+     * @return authorId
+     */
     public final int getAuthorId() {
         return authorId;
     }
 
+    /**
+     * Sets the value of the Author ID.
+     * @param authorId
+     * @throws IllegalArgumentException if the authorId is less than 1.
+     */
     public final void setAuthorId(int authorId) throws IllegalArgumentException {
         if (authorId < 1) {
             throw new IllegalArgumentException(INVALID_ID);
@@ -56,14 +70,18 @@ public class Author {
         this.authorId = authorId;
     }
 
+    /**
+     * Returns the name of the Author.
+     * @return authorName
+     */
     public final String getAuthorName() {
         return authorName;
     }
 
     /**
-     *
+     *Sets the value of the Author name.
      * @param authorName
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if the author name is empty or null.
      */
     public final void setAuthorName(String authorName) throws IllegalArgumentException {
         if (authorName == null || authorName.isEmpty()) {
@@ -72,14 +90,18 @@ public class Author {
         this.authorName = authorName;
     }
 
+    /**
+     * Returns the Author's date added.
+     * @return dateAdded
+     */
     public final Date getDateAdded() {
         return dateAdded;
     }
 
     /**
-     *
+     * Sets the value of the Author date added.
      * @param dateAdded
-     * @throws NullPointerException
+     * @throws NullPointerException if dateAdded is null
      */
     public final void setDateAdded(Date dateAdded) throws NullPointerException {
         if (dateAdded == null) {

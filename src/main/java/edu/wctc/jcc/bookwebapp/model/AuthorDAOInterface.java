@@ -24,4 +24,6 @@ public interface AuthorDAOInterface {
     void createAuthor(List<String> columns, List<Object> values) throws ClassNotFoundException, SQLException;
     
     int updateAuthor(List<String> colNames, List<Object> colValues, String primaryKeyCOl, String id) throws ClassNotFoundException, SQLException;
+    
+    void initDAO(String driverClass, String url, String username, String password);
 }

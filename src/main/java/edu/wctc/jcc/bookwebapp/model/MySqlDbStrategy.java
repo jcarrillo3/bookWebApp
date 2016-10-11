@@ -5,6 +5,7 @@
  */
 package edu.wctc.jcc.bookwebapp.model;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,16 +19,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import javax.enterprise.context.Dependent;
 
 /**
  *
  * @author jcarrillo
  */
-public class MySqlDbStrategy implements DbStrategy {
+@Dependent
+public class MySqlDbStrategy implements DbStrategy, Serializable {
     private Connection conn;
     
     @Override
-    public final void openConnection(String driverClass, String url, String userName, 
+    public  void openConnection(String driverClass, String url, String userName, 
             String password) throws ClassNotFoundException, SQLException, IllegalArgumentException {
         
         if (driverClass.isEmpty() || url.isEmpty() || userName.isEmpty() || password.isEmpty()) {
@@ -42,12 +45,12 @@ public class MySqlDbStrategy implements DbStrategy {
     }
     
     @Override
-    public final void closeConnection() throws SQLException{
+    public  void closeConnection() throws SQLException{
         conn.close();
     }
     
     @Override
-    public final List<Map<String, Object>> findAllRecords(String tableName, int maxRecords) 
+    public  List<Map<String, Object>> findAllRecords(String tableName, int maxRecords) 
             throws SQLException, IllegalArgumentException{
         
         if (tableName == null || tableName.isEmpty()) {
@@ -74,7 +77,7 @@ public class MySqlDbStrategy implements DbStrategy {
     }
     
     @Override
-    public final Map<String, Object> findRecordByKey(String tableName, 
+    public  Map<String, Object> findRecordByKey(String tableName, 
             String colName, Object keyVal) throws SQLException, IllegalArgumentException{
         
         if(tableName == null || tableName.isEmpty() || colName == null 
@@ -104,7 +107,7 @@ public class MySqlDbStrategy implements DbStrategy {
     }
     
     @Override
-    public final int deleteRecordByKey(String tableName, String primaryKeyCol, 
+    public int deleteRecordByKey(String tableName, String primaryKeyCol, 
             Object keyVal) throws SQLException, IllegalArgumentException, NullPointerException{
         
         if (tableName.isEmpty()|| primaryKeyCol.isEmpty()){
@@ -129,7 +132,7 @@ public class MySqlDbStrategy implements DbStrategy {
     }
     
     @Override
-    public final int updateRecordByKey(String tableName, List<String> colNames, 
+    public  int updateRecordByKey(String tableName, List<String> colNames, 
             List<Object> colValues, String primaryKeyCol, Object keyVal) 
             throws SQLException, IllegalArgumentException, NullPointerException {
         
@@ -168,7 +171,7 @@ public class MySqlDbStrategy implements DbStrategy {
     
     
     @Override
-    public final void insertRecord(String tableName, List<String> colNames, 
+    public  void insertRecord(String tableName, List<String> colNames, 
             List<Object> colValues) throws SQLException, IllegalArgumentException, NullPointerException {
         
         if (tableName.isEmpty() || colNames.size() < 1 || colValues.size() < 1) {

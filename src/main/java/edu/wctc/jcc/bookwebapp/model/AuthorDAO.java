@@ -5,38 +5,56 @@
  */
 package edu.wctc.jcc.bookwebapp.model;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 /**
  *
  * @author jcarrillo
  */
-public class AuthorDAO implements AuthorDAOInterface {
+@Dependent
+public class AuthorDAO implements AuthorDAOInterface, Serializable {
+    @Inject
     private DbStrategy db;
+    
     private String driverClass;
     private String url;
     private String userName;
     private String password;
-
-    public AuthorDAO(DbStrategy db, String driverClass, String url, String userName, 
-            String password) {
-        
-        this.db = db;
-        this.driverClass = driverClass;
-        this.url = url;
-        this.userName = userName;
-        this.password = password;
+    
+    /**
+     * Empty Constructor.
+     */    
+    public AuthorDAO(){   
     }
     
-    
-    public AuthorDAO(DbStrategy db){
-        this.db = db;
+    /**
+     * Initializes the JDBC Connection properties
+     * @param driverClass
+     * @param url
+     * @param username
+     * @param password 
+     */
+    @Override
+    public void initDAO(String driverClass, String url, String username, String password){
+        setDriverClass(driverClass);
+        setUrl(url);
+        setUserName(username);
+        setPassword(password);
     }
     
+    /**
+     * Returns a list of all authors in the Database.
+     * @return authors
+     * @throws ClassNotFoundException
+     * @throws SQLException 
+     */
     @Override
     public  List<Author> getAuthorList() throws ClassNotFoundException, 
             SQLException{
@@ -118,29 +136,62 @@ public class AuthorDAO implements AuthorDAOInterface {
         this.db = db;
     }
     
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        
-        AuthorDAOInterface dao = new AuthorDAO(new MySqlDbStrategy(), 
-                "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
-        
+    
+//    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+//        
+//        AuthorDAOInterface dao = new AuthorDAO(new MySqlDbStrategy(), 
+//                "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+//        
+////        List<Author> authors = dao.getAuthorList();
+////        System.out.println(authors);
+//        
+////        dao.deleteAuthorById("2");
+////        List<Author> authors = dao.getAuthorList();
+////        System.out.println(authors);
+//
+//        List<String> columns = new ArrayList<>();
+//        columns.add("author_name");
+//        columns.add("date_added");
+//        List<Object> vals = new ArrayList<>();
+//        vals.add("Sam Smith");
+//        vals.add("2013-02-28");
+//        
+//        dao.createAuthor(columns, vals);
+//        
 //        List<Author> authors = dao.getAuthorList();
 //        System.out.println(authors);
-        
-//        dao.deleteAuthorById("2");
-//        List<Author> authors = dao.getAuthorList();
-//        System.out.println(authors);
+//        
+//    }
 
-        List<String> columns = new ArrayList<>();
-        columns.add("author_name");
-        columns.add("date_added");
-        List<Object> vals = new ArrayList<>();
-        vals.add("Sam Smith");
-        vals.add("2013-02-28");
-        
-        dao.createAuthor(columns, vals);
-        
-        List<Author> authors = dao.getAuthorList();
-        System.out.println(authors);
-        
+    public String getDriverClass() {
+        return driverClass;
+    }
+
+    public void setDriverClass(String driverClass) {
+        this.driverClass = driverClass;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
