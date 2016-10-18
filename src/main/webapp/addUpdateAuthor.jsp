@@ -17,6 +17,24 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     </head>
     <body style="margin: 50px;">
+        <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #1b6d85">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                    <a class="navbar-brand" href="index.jsp">Book Web App</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="authors?action=list">Authors</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container well" style="background-color: lightgoldenrodyellow">
         <h1>${pageTitle}</h1>
         <c:choose>
             <c:when test="${addOrUpdate == 'add'}">
@@ -31,10 +49,10 @@
                 </form>
             </c:when>
             <c:when test="${addOrUpdate == 'update'}">
-                <form id="updateForm" method="POST" action="authors?action=update">
+                <form id="updateForm" method="POST" action="authors?action=update&id=${id}">
                     <div class="form-group">
                         <label for="aId">ID</label>
-                        <input type="text" id="aId" name="aId" class="form-control" value="${id}" />
+                        <input type="text" id="aId" name="aId" class="form-control" value="${id}" readonly="true"/>
                     </div>
                     <div class="form-group">
                         <label for="name">Name</label>
@@ -50,6 +68,7 @@
                 </form>
             </c:when>
         </c:choose>
+        </div>
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="main.js"></script>

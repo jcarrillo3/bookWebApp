@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -32,14 +33,22 @@ import javax.inject.Inject;
  */
 @WebServlet(name = "AuthorController", urlPatterns = {"/authors"})
 public class AuthorController extends HttpServlet {
-
+    private final static String LIST_ACTION = "list";
+    private final static String ADD_UPDATE_DELETE_ACTION = "AddUpdateDelete";
+    private final static String SAVE_ADD = "add";
+    private final static String SAVE_UPDATE = "update";
+    private final static String AUTHORS_PAGE = "/authorsTable.jsp";
+    private final static String ADD_UPDATE_PAGE = "/addUpdateAuthor.jsp";
+    private final static String ADD_HEADER = "Add Author";
+    private final static String UPDATE_HEADER = "Update Author";
+    
     private final String INVALID_VALUE_MSG = "Invalid Value";
 
     private String driverClass;
     private String url;
     private String username;
     private String password;
-
+    private String webMasterEmail;
     @Inject
     private AuthorService authService;
 
@@ -55,29 +64,31 @@ public class AuthorController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
+//        HttpSession session = request.getSession();
         String action = request.getParameter("action");
-        String destination = "/authorsTable.jsp";
+        String destination = AUTHORS_PAGE;
 
         try {
             configDbConnection();
             switch (action) {
-                case "list":
-                    List<Author> authors = authService.getAuthors();
+                case LIST_ACTION:
+                    destination = AUTHORS_PAGE;
+                   List<Author> authors = authService.getAuthors();
                     request.setAttribute("authorList", authors);
                     break;
-                case "AddUpdateDelete":
-                    destination = "/addUpdateAuthor.jsp";
+                case ADD_UPDATE_DELETE_ACTION:
+                    destination = ADD_UPDATE_PAGE;
                     String addOrUpdate = "";
                     String header = "";
                     String[] selected = request.getParameterValues("checkboxes");
                     //If no checkbox is selected we will add new Author
                     if (selected == null || selected.length == 0) {
                         addOrUpdate = "add";
-                        header = "Add Author";
+                        header = ADD_HEADER;
                     } // We Update by verifying the update button was pressed
                     else if (!(request.getParameter("btnUpdate") == null)) {
                         addOrUpdate = "update";
-                        header = "Update Author";
+                        header = UPDATE_HEADER;
                         String id = selected[0];
                         Author a = authService.getAuthorById(id);
                         request.setAttribute("id", id);
@@ -85,20 +96,20 @@ public class AuthorController extends HttpServlet {
                         request.setAttribute("date", a.getDateAdded());
                     } // Leaves Delete as the last option
                     else {
-                        destination = "/authorsTable.jsp";
+                        destination = AUTHORS_PAGE;
                         for (String author : selected) {
                             authService.deleteAuthor(author);
                         }
-                        refreshAuthors(request, response);
+                        refreshAuthors(request);
                     }
                     request.setAttribute("pageTitle", header);
                     request.setAttribute("addOrUpdate", addOrUpdate);
                     break;
-                case "add":
-                    destination = "/authorsTable.jsp";
+                case SAVE_ADD:
+                    destination = AUTHORS_PAGE;
                     //Check if cancel button was pressed
                     if (request.getParameter("cancel") != null) {
-                        refreshAuthors(request, response);
+                        refreshAuthors(request);
                     } 
                     // else add new author 
                     else {
@@ -107,38 +118,38 @@ public class AuthorController extends HttpServlet {
                         colValues.add(authorName);
                         colValues.add(new Date());
                         authService.createNewAuthor(generateColNames(), colValues);
-                        refreshAuthors(request, response);
+                        refreshAuthors(request);
                     }
                     break;
-                case "update":
-                    destination = "/authorsTable.jsp";
+                case SAVE_UPDATE:
+                    destination = AUTHORS_PAGE;
                     // check if cancel button was pressed
                     if (request.getParameter("cancel") != null) {
-                        refreshAuthors(request, response);
+                        refreshAuthors(request);
                     } 
                     // else update author
                     else {
-                        String id = request.getParameter("aId");
+                        String id = request.getParameter("id");
                         String name = request.getParameter("name");
                         String date = request.getParameter("date");
                         List<Object> values = new ArrayList<>();
                         values.add(name);
                         values.add(date);
                         authService.updateAuthorByKey(generateColNames(), values, "author_id", id);
-                        refreshAuthors(request, response);
+                        refreshAuthors(request);
                     }
                     break;
             }
         } catch (Exception e) {
             request.setAttribute("errMsg", e.getCause().getMessage());
-            //e.printStackTrace();
+            e.printStackTrace();
         }
 
         RequestDispatcher view = request.getRequestDispatcher(destination);
         view.forward(request, response);
     }
 
-    private void refreshAuthors(HttpServletRequest request, HttpServletResponse response)
+    private void refreshAuthors(HttpServletRequest request)
             throws ClassNotFoundException, SQLException {
 
         List<Author> authors = authService.getAuthors();
@@ -206,10 +217,10 @@ public class AuthorController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        driverClass = "com.mysql.jdbc.Driver";
-        url = "jdbc:mysql://localhost:3306/book";
-        username = "root";
-        password = "admin";
+        driverClass = getServletContext().getInitParameter("db.driver.class");
+        url = getServletContext().getInitParameter("db.url");
+        username = getServletContext().getInitParameter("db.username");
+        password = getServletContext().getInitParameter("db.password");
     }
 
     private void configDbConnection() {

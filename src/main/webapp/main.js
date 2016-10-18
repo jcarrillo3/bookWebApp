@@ -7,7 +7,6 @@
 $(function(){
 
     checkBoxes();
-    $('#aId').prop('disabled', true);
     
     $('.checkbox').click(function(){
 

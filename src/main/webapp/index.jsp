@@ -17,7 +17,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     </head>
     <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #1b6d85">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -34,7 +34,7 @@
                 </div>
             </div>
         </div>
-        <div id="homeDiv">
+        <div class="container well" style="margin:40px auto; background-color: lightgoldenrodyellow">
             <h2>Click the link below to view all authors.</h2><br><br>
             <h4><a href="authors?action=list">View all Authors</a></h4>
             <img src="http://www.clipartbest.com/cliparts/biy/LEz/biyLEz9iL.png" alt="stack of books" />

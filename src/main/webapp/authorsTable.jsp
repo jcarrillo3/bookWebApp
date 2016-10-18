@@ -18,7 +18,27 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     </head>
     <body class="alignCenter">
-        <div class="container" style="width:800px; margin:0 auto;">
+        <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #1b6d85">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                    <a class="navbar-brand" href="index.jsp">Book Web App</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="authors?action=list">Authors</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <c:if test="${errMsg != null}">
+            <h1>${errMsg}</h1>
+        </c:if>
+        <div class="container" style="width:800px; margin:50px auto;">
         <h1>Authors Table</h1>
         <form id="form1" name="form1" method="POST" action="authors?action=AddUpdateDelete">
             <button title="Add" type="submit" id="btnAdd" name="btnAdd" class="btn btn-default">
