@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import javax.sql.DataSource;
 import javax.enterprise.context.Dependent;
 
 /**
@@ -42,6 +43,15 @@ public class MySqlDbStrategy implements DbStrategy, Serializable {
         
         Class.forName(driverClass);
         conn = DriverManager.getConnection(url, userName, password);
+    }
+    
+    @Override
+    public final void openConnection(DataSource ds) throws SQLException{
+        try {
+            conn = ds.getConnection();
+        } catch (SQLException e) {
+            throw new SQLException(e.getCause().getMessage());
+        }
     }
     
     @Override

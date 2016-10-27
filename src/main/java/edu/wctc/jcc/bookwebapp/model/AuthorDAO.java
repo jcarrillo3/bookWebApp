@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.sql.DataSource;
 
 /**
  *
@@ -22,6 +23,7 @@ import javax.inject.Inject;
 public class AuthorDAO implements AuthorDAOInterface, Serializable {
     @Inject
     private DbStrategy db;
+    private DataSource ds;
     
     private String driverClass;
     private String url;
@@ -32,6 +34,11 @@ public class AuthorDAO implements AuthorDAOInterface, Serializable {
      * Empty Constructor.
      */    
     public AuthorDAO(){   
+    }
+    
+    @Override
+    public void initDAO(DataSource ds) throws SQLException {
+        setDs(ds);
     }
     
     /**
@@ -58,9 +65,12 @@ public class AuthorDAO implements AuthorDAOInterface, Serializable {
     @Override
     public  List<Author> getAuthorList() throws ClassNotFoundException, 
             SQLException{
-        
-        db.openConnection(driverClass, url, userName, password);
-        
+        if (ds == null){
+            db.openConnection(driverClass, url, userName, password);
+        } else {
+            db.openConnection(ds);
+        }
+       
         List<Map<String, Object>> records = db.findAllRecords("author", 500);
         List<Author> authors = new ArrayList<>();
         for(Map<String, Object> rec: records){
@@ -80,8 +90,12 @@ public class AuthorDAO implements AuthorDAOInterface, Serializable {
     
     @Override
     public Author getAuthorById(String id) throws ClassNotFoundException, SQLException {
+        if (ds == null){
+            db.openConnection(driverClass, url, userName, password);
+        } else {
+            db.openConnection(ds);
+        }
         
-        db.openConnection(driverClass, url, userName, password);
         Map<String, Object> record = db.findRecordByKey("author", "author_id", id);
         
         Author a = new Author();
@@ -100,7 +114,12 @@ public class AuthorDAO implements AuthorDAOInterface, Serializable {
         
         Integer value = Integer.parseInt(id);
         
-        db.openConnection(driverClass, url, userName, password);
+        if (ds == null){
+            db.openConnection(driverClass, url, userName, password);
+        } else {
+            db.openConnection(ds);
+        }
+        
         int deleteCount = db.deleteRecordByKey("author", "author_id", value);
         db.closeConnection();
         
@@ -111,7 +130,12 @@ public class AuthorDAO implements AuthorDAOInterface, Serializable {
     public void createAuthor(List<String> columns, List<Object> values) 
             throws ClassNotFoundException, SQLException{
         
-        db.openConnection(driverClass, url, userName, password);
+        if (ds == null){
+            db.openConnection(driverClass, url, userName, password);
+        } else {
+            db.openConnection(ds);
+        }
+        
         db.insertRecord("author", columns, values);
         db.closeConnection();
     }
@@ -120,7 +144,11 @@ public class AuthorDAO implements AuthorDAOInterface, Serializable {
     public int updateAuthor(List<String> colNames, List<Object> colValues, 
             String primaryKeyCol, String id) throws ClassNotFoundException, SQLException {
          
-        db.openConnection(driverClass, url, userName, password);
+        if (ds == null){
+            db.openConnection(driverClass, url, userName, password);
+        } else {
+            db.openConnection(ds);
+        }
         
         int updateCount = db.updateRecordByKey("author", colNames, colValues, primaryKeyCol, id);
         db.closeConnection();
@@ -194,4 +222,13 @@ public class AuthorDAO implements AuthorDAOInterface, Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public DataSource getDs() {
+        return ds;
+    }
+
+    public void setDs(DataSource ds) {
+        this.ds = ds;
+    }
+    
 }

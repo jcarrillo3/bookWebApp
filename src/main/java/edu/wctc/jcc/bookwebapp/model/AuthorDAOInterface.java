@@ -7,6 +7,7 @@ package edu.wctc.jcc.bookwebapp.model;
 
 import java.sql.SQLException;
 import java.util.List;
+import javax.sql.DataSource;
 
 /**
  *
@@ -26,4 +27,5 @@ public interface AuthorDAOInterface {
     int updateAuthor(List<String> colNames, List<Object> colValues, String primaryKeyCOl, String id) throws ClassNotFoundException, SQLException;
     
     void initDAO(String driverClass, String url, String username, String password);
+    void initDAO(DataSource ds) throws SQLException;
 }

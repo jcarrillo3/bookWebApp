@@ -25,7 +25,11 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 /**
  *
@@ -49,6 +53,9 @@ public class AuthorController extends HttpServlet {
     private String username;
     private String password;
     private String webMasterEmail;
+    
+    private String dbJndiName;
+    
     @Inject
     private AuthorService authService;
 
@@ -221,9 +228,19 @@ public class AuthorController extends HttpServlet {
         url = getServletContext().getInitParameter("db.url");
         username = getServletContext().getInitParameter("db.username");
         password = getServletContext().getInitParameter("db.password");
+        
+        dbJndiName = getServletContext().getInitParameter("db.jndi.name");
     }
 
-    private void configDbConnection() {
-        authService.getDao().initDAO(driverClass, url, username, password);
+    private void configDbConnection() throws NamingException, SQLException {
+        //authService.getDao().initDAO(driverClass, url, username, password);
+        
+        if (dbJndiName == null){
+            authService.getDao().initDAO(driverClass, url, username, password);
+        } else {
+           Context ctx = new InitialContext();
+           DataSource ds = (DataSource) ctx.lookup(dbJndiName);
+           authService.getDao().initDAO(ds);   
+        }
     }
 }
