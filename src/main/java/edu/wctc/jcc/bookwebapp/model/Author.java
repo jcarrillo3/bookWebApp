@@ -5,131 +5,103 @@
  */
 package edu.wctc.jcc.bookwebapp.model;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
 
 /**
  *
  * @author jcarrillo
  */
-public class Author {
+@Entity
+@Table(name = "author")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Author.findAll", query = "SELECT a FROM Author a"),
+    @NamedQuery(name = "Author.findByAuthorId", query = "SELECT a FROM Author a WHERE a.authorId = :authorId"),
+    @NamedQuery(name = "Author.findByAuthorName", query = "SELECT a FROM Author a WHERE a.authorName = :authorName"),
+    @NamedQuery(name = "Author.findByDateAdded", query = "SELECT a FROM Author a WHERE a.dateAdded = :dateAdded")})
+public class Author implements Serializable {
 
-    private int authorId;
+    @OneToMany(mappedBy = "authorId", cascade = CascadeType.ALL)
+    private Set<Book> bookSet;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "author_id")
+    private Integer authorId;
+    @Size(max = 80)
+    @Column(name = "author_name")
     private String authorName;
+    @Column(name = "date_added")
+    @Temporal(TemporalType.DATE)
     private Date dateAdded;
-    private final String INVALID_DATE = "Invalid Date value.";
-    private final String INVALID_NAME = "Invalid Author Name.";
-    private final String INVALID_ID = "Invalid Author ID.";
-    private final String INVALID_NAME_OR_ID = "Invalid Author Name and/or ID.";
 
-    /**
-     * Empty Constructor.
-     */
     public Author() {
     }
-    
-    /**
-     * Initializes an Author with ID only.
-     * @param authorId
-     * @throws IllegalArgumentException if authorId is less than 1. 
-     */
-    public Author(int authorId) throws IllegalArgumentException{
-        setAuthorId(authorId);
-    }
-    
-    /**
-     * Initializes an Author with ID, Name, and Date Added.
-     * @param authorId
-     * @param authorName
-     * @param dateAdded
-     * @throws IllegalArgumentException if parameters are invalid.
-     * @throws NullPointerException if any parameter is null.
-     */
-    public Author(int authorId, String authorName, Date dateAdded) throws IllegalArgumentException, NullPointerException {
-        setAuthorId(authorId);
-        setAuthorName(authorName);
-        setDateAdded(dateAdded);
-    }
 
-    /**
-     * Returns the ID of the Author.
-     * @return authorId
-     */
-    public final int getAuthorId() {
-        return authorId;
-    }
-
-    /**
-     * Sets the value of the Author ID.
-     * @param authorId
-     * @throws IllegalArgumentException if the authorId is less than 1.
-     */
-    public final void setAuthorId(int authorId) throws IllegalArgumentException {
-        if (authorId < 1) {
-            throw new IllegalArgumentException(INVALID_ID);
-        }
+    public Author(Integer authorId) {
         this.authorId = authorId;
     }
 
-    /**
-     * Returns the name of the Author.
-     * @return authorName
-     */
-    public final String getAuthorName() {
+    public Integer getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
+    }
+
+    public String getAuthorName() {
         return authorName;
     }
 
-    /**
-     *Sets the value of the Author name.
-     * @param authorName
-     * @throws IllegalArgumentException if the author name is empty or null.
-     */
-    public final void setAuthorName(String authorName) throws IllegalArgumentException {
-        if (authorName == null || authorName.isEmpty()) {
-            throw new IllegalArgumentException(INVALID_NAME);
-        }
+    public void setAuthorName(String authorName) {
         this.authorName = authorName;
     }
 
-    /**
-     * Returns the Author's date added.
-     * @return dateAdded
-     */
-    public final Date getDateAdded() {
+    public Date getDateAdded() {
         return dateAdded;
     }
 
-    /**
-     * Sets the value of the Author date added.
-     * @param dateAdded
-     * @throws NullPointerException if dateAdded is null
-     */
-    public final void setDateAdded(Date dateAdded) throws NullPointerException {
-        if (dateAdded == null) {
-            throw new NullPointerException(INVALID_DATE);
-        }
+    public void setDateAdded(Date dateAdded) {
         this.dateAdded = dateAdded;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + this.authorId;
+        int hash = 0;
+        hash += (authorId != null ? authorId.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Author)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Author other = (Author) obj;
-        if (this.authorId != other.authorId) {
+        Author other = (Author) object;
+        if ((this.authorId == null && other.authorId != null) || (this.authorId != null && !this.authorId.equals(other.authorId))) {
             return false;
         }
         return true;
@@ -137,7 +109,16 @@ public class Author {
 
     @Override
     public String toString() {
-        return "Author{" + "authorId=" + authorId + ", authorName=" + authorName + ", dateAdded=" + dateAdded + '}';
+        return authorName;
     }
 
+    @XmlTransient
+    public Set<Book> getBookSet() {
+        return bookSet;
+    }
+
+    public void setBookSet(Set<Book> bookSet) {
+        this.bookSet = bookSet;
+    }
+    
 }

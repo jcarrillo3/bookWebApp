@@ -17,23 +17,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     </head>
     <body style="margin: 50px;">
-        <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #1b6d85">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                    <a class="navbar-brand" href="index.jsp">Book Web App</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="authors?action=list">Authors</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        <jsp:include page="navbar.jsp"></jsp:include>
         <div class="container well" style="background-color: lightgoldenrodyellow">
         <h1>${pageTitle}</h1>
         <c:choose>
@@ -60,7 +44,7 @@
                     </div>
                     <div class="form-group">
                         <label for="date">Date Added</label>
-                        <input type="date" id="date" name="date" class="form-control" value="${date}" />
+                        <input type="text" id="date" name="date" class="form-control" value="${date}" />
                     </div>
                     <input type="submit" id="save" name="save" value="Save" class="btn btn-primary" />
                     <input type="submit" id="cancel" name="cancel" value="Cancel" class="btn btn-default" />

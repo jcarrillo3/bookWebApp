@@ -1,6 +1,6 @@
 <%-- 
-    Document   : authorsTable
-    Created on : Sep 19, 2016, 4:05:09 PM
+    Document   : booksTable
+    Created on : Nov 7, 2016, 12:50:44 PM
     Author     : jcarrillo
 --%>
 
@@ -23,7 +23,7 @@
             <c:if test="${errMsg != null}">
             <h1>${errMsg}</h1>
         </c:if>
-        <h1>Authors Table</h1>
+        <h1>Books Table</h1>
         <form method="POST" action="authors?action=findByName">
         <label>Find Author: </label>
         <input type="text" id="name" name="name" class="form-control" placeholder="Author Name" />
@@ -43,18 +43,20 @@
             <table id="table1" name="authorTable" class=" table table-bordered table-hover">
             <thead>
             <th class="blueHeader"></th>
-                <th class="text-center blueHeader">Author ID</th>
-                <th class="text-center blueHeader">Author Name</th>
-                <th class="text-center blueHeader">Date Added</th>
+                <th class="text-center blueHeader">Book ID</th>
+                <th class="text-center blueHeader">Book Title</th>
+                <th class="text-center blueHeader">ISBN</th>
+                <th class="text-center blueHeader">Author</th>
             </thead>
-        <c:forEach var="author" items="${authorList}">
+        <c:forEach var="book" items="${books}">
             <tr>
                 <td>
-                    <input type="checkbox" name="checkboxes" value="${author.authorId}" class="checkbox checkbox-inline">
+                    <input type="checkbox" name="checkboxes" value="${book.bookId}" class="checkbox checkbox-inline">
                 </td>
-                <td>${author.authorId}</td>
-                <td>${author.authorName}</td>
-                <td><fmt:formatDate pattern="M/d/yyyy" value="${author.dateAdded}"></fmt:formatDate></td>
+                <td>${book.bookId}</td>
+                <td>${book.title}</td>
+                <td>${book.isbn}</td>
+                <td>${book.authorId}</td>
             </tr>
         </c:forEach>
         </table>

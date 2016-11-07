@@ -17,27 +17,16 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     </head>
     <body>
-        <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #1b6d85">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                    <a class="navbar-brand" href="index.jsp">Book Web App</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="authors?action=list">Authors</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        <jsp:include page="navbar.jsp"></jsp:include>
         <div class="container well" style="margin:40px auto; background-color: lightgoldenrodyellow">
-            <h2>Click the link below to view all authors.</h2><br><br>
-            <h4><a href="authors?action=list">View all Authors</a></h4>
-            <img src="http://www.clipartbest.com/cliparts/biy/LEz/biyLEz9iL.png" alt="stack of books" />
+            <div style="float: left">
+                <h2>Click the link below to view all authors.</h2>
+                <h4><a href="authors?action=list">View all Authors</a></h4>
+                <br />
+                <h2>Click the link below to view all books.</h2>
+                <h4><a href="booksCo?action=list">View all Books</a></h4>
+            </div>
+            <img src="http://www.clipartbest.com/cliparts/biy/LEz/biyLEz9iL.png" alt="stack of books" style="float: right" />
         </diV>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </body>
